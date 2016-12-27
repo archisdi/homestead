@@ -28,9 +28,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 
 $config['levels_and_roles'] = [
-	'1' => 'customer',
-	'6' => 'manager',
-	'9' => 'admin'
+    '1' => 'customer',
+    '9' => 'admin'
 ];
 
 /*
@@ -42,7 +41,7 @@ $config['levels_and_roles'] = [
 */
 
 $config['groups'] = [
-	'employees' => 'manager,admin'
+//	'employees' => 'manager,admin'
 ];
 
 /*
@@ -72,7 +71,7 @@ $config['add_acl_query_to_auth_functions'] = FALSE;
 | 
 */
 
-$config['max_allowed_attempts'] = 5;
+$config['max_allowed_attempts'] = 100;
 
 /*
 | -----------------------------------------------------------------
@@ -87,7 +86,7 @@ $config['max_allowed_attempts'] = 5;
 | 
 */
 
-$config['deny_access_at'] = 10;
+$config['deny_access_at'] = 50;
 
 /*
 | -----------------------------------------------------------------
@@ -98,13 +97,13 @@ $config['deny_access_at'] = 10;
 */
 
 $config['denied_access_reason'] = [
-	'0' => 'Not Specified',
-	'1' => 'Login Attempts',
-	'2' => 'Malicious User',
-	'3' => 'Hacking Attempt',
-	'4' => 'Spam',
-	'5' => 'Obscene Language',
-	'6' => 'Threatening Language'
+    '0' => 'Not Specified',
+    '1' => 'Login Attempts',
+    '2' => 'Malicious User',
+    '3' => 'Hacking Attempt',
+    '4' => 'Spam',
+    '5' => 'Obscene Language',
+    '6' => 'Threatening Language'
 ];
 
 /*
@@ -244,10 +243,10 @@ $config['http_user_cookie_elements'] = ['username'];
 |
 */
 
-$config['http_tokens_cookie']  = 'httpTokens';
+$config['http_tokens_cookie'] = 'httpTokens';
 $config['https_tokens_cookie'] = 'httpsTokens';
-$config['token_jar_size']      = 32;
-$config['token_name']          = 'token';
+$config['token_jar_size'] = 32;
+$config['token_name'] = 'token';
 
 /*
 | -----------------------------------------------------------------
@@ -309,7 +308,9 @@ $config['default_login_redirect'] = '';
 | added, so you just put in optional login pages here.
 */
 
-$config['allowed_pages_for_login'] = [];
+$config['allowed_pages_for_login'] = [
+    'auth/login'
+];
 
 /*
 | -----------------------------------------------------------------

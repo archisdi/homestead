@@ -1,6 +1,6 @@
 <?php
 
-Class Pages extends Auth_Controller
+Class Pages extends MY_Controller
 {
 
     public function view($page = 'home')
@@ -9,6 +9,8 @@ Class Pages extends Auth_Controller
         if (!file_exists(APPPATH . 'views/pages/' . $page . '.php')) {
             show_404();
         }
+
+        $this->is_logged_in();
 
         $data['title'] = ucfirst($page);
 

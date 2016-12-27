@@ -1,5 +1,8 @@
 # MAKE SURE TO LEAVE THE DENY LIST AT THE TOP OF THE FILE !!!
 # BEGIN DENY LIST --
+<Limit GET POST>
+order deny,allow
+</Limit>
 # END DENY LIST --
 
 RewriteEngine on

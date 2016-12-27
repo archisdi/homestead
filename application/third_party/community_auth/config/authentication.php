@@ -359,7 +359,7 @@ $config['declared_auth_model'] = 'auth_model';
 # this setting to FALSE.
 #
 # Example cron to run once every 10 minutes:
-#     */10 * * * * php /path/to/project/index.php crons auth_sessions_gc > /dev/null 2>&1
+#     */10 * * * * php /path/to/project/index_customer.php crons auth_sessions_gc > /dev/null 2>&1
 #
 # Example cront to run once every 10 minutes (using wget):
 #     */10 * * * * /usr/bin/wget http://<YOUR DOMAIN>/crons/auth_sessions_gc -O /dev/null

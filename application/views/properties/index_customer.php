@@ -1,4 +1,4 @@
-<h2><?php echo $title ?></h2>
+<h2>Properties</h2>
 
 <hr>
 

@@ -1,17 +1,6 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-/**
- * Community Auth - Examples Controller
- *
- * Community Auth is an open source authentication application for CodeIgniter 3
- *
- * @package     Community Auth
- * @author      Robert B Gottier
- * @copyright   Copyright (c) 2011 - 2016, Robert B Gottier. (http://brianswebdesign.com/)
- * @license     BSD - http://www.opensource.org/licenses/BSD-3-Clause
- * @link        http://community-auth.com
- */
 class Auth extends MY_Controller
 {
     public function __construct()
@@ -26,88 +15,6 @@ class Auth extends MY_Controller
         $this->load->helper('form');
     }
 
-    // -----------------------------------------------------------------------
-
-    /**
-     * Demonstrate being redirected to login.
-     * If you are logged in and request this method,
-     * you'll see the message, otherwise you will be
-     * shown the login form. Once login is achieved,
-     * you will be redirected back to this method.
-     */
-    public function index()
-    {
-        if ($this->require_role('admin')) {
-            echo $this->load->view('examples/page_header', '', TRUE);
-
-            echo '<p>You are logged in!</p>';
-
-            echo $this->load->view('examples/page_footer', '', TRUE);
-        }
-    }
-
-    // -----------------------------------------------------------------------
-
-    /**
-     * A basic page that shows verification that the user is logged in or not.
-     * If the user is logged in, a link to "Logout" will be in the menu.
-     * If they are not logged in, a link to "Login" will be in the menu.
-     */
-    public function home()
-    {
-        $this->is_logged_in();
-
-        echo $this->load->view('examples/page_header', '', TRUE);
-
-        echo '<p>Welcome Home</p>';
-
-        echo $this->load->view('examples/page_footer', '', TRUE);
-    }
-
-    // -----------------------------------------------------------------------
-
-    /**
-     * Demonstrate an optional login.
-     * Remember to add "examples/optional_login_test" to the
-     * allowed_pages_for_login array in config/authentication.php.
-     *
-     * Notice that we are using verify_min_level to check if
-     * a user is already logged in.
-     */
-    public function optional_login_test()
-    {
-        if ($this->verify_min_level(1)) {
-            $page_content = '<p>Although not required, you are logged in!</p>';
-        } elseif ($this->tokens->match && $this->optional_login()) {
-            // Let Community Auth handle the login attempt ...
-        } else {
-            // Notice parameter set to TRUE, which designates this as an optional login
-            $this->setup_login_form(TRUE);
-
-            $page_content = '<p>You are not logged in, but can still see this page.</p>';
-
-            // Form helper needed
-            $this->load->helper('form');
-
-            $page_content .= $this->load->view('examples/login_form', '', TRUE);
-        }
-
-        echo $this->load->view('examples/page_header', '', TRUE);
-
-        echo $page_content;
-
-        echo $this->load->view('examples/page_footer', '', TRUE);
-    }
-
-    // -----------------------------------------------------------------------
-
-    /**
-     * Here we simply verify if a user is logged in, but
-     * not enforcing authentication. The presence of auth
-     * related variables that are not empty indicates
-     * that somebody is logged in. Also showing how to
-     * get the contents of the HTTP user cookie.
-     */
     public function simple_verification()
     {
         $this->is_logged_in();
@@ -158,134 +65,134 @@ class Auth extends MY_Controller
         echo $this->load->view('examples/page_footer', '', TRUE);
     }
 
-    // -----------------------------------------------------------------------
-
-    /**
-     * Most minimal user creation. You will of course make your
-     * own interface for adding users, and you may even let users
-     * register and create their own accounts.
-     *
-     * The password used in the $user_data array needs to meet the
-     * following default strength requirements:
-     *   - Must be at least 8 characters long
-     *   - Must be at less than 72 characters long
-     *   - Must have at least one digit
-     *   - Must have at least one lower case letter
-     *   - Must have at least one upper case letter
-     *   - Must not have any space, tab, or other whitespace characters
-     *   - No backslash, apostrophe or quote chars are allowed
-     */
     public function register()
     {
-        $data['title'] = 'Register Page';
-        if ($this->input->server('REQUEST_METHOD') == 'POST') {
+        if (!$this->verify_min_level(1)) {
+            $data['title'] = 'Register Page';
+            if ($this->input->server('REQUEST_METHOD') == 'POST') {
 
-            $user_data = [
-                'username' => $this->input->post('username'),
-                'passwd' => $this->input->post('password'),
-                'email' => $this->input->post('email'),
-                'auth_level' => '6',
-            ];
+                $user_data = [
+                    'username' => $this->input->post('username'),
+                    'passwd' => $this->input->post('password'),
+                    'email' => $this->input->post('email'),
+                    'auth_level' => '1',
+                ];
 
-            $this->is_logged_in();
+//            $user_data = [
+//                'username' => 'admin',
+//                'passwd' => 'JongCelebes80700',
+//                'email' => 'archisdiningrat@gmail.com',
+//                'auth_level' => '9',
+//            ];
 
-            // Load resources
-            $this->load->model('user_model');
-            $this->load->model('validation_callables');
-            $this->load->library('form_validation');
-            $this->load->library('email');
+                $this->is_logged_in();
 
-            $this->form_validation->set_data($user_data);
+                // Load resources
+                $this->load->model('user_model');
+                $this->load->model('validation_callables');
+                $this->load->library('form_validation');
+                $this->load->library('email');
 
-            $validation_rules = [
-                [
-                    'field' => 'username',
-                    'label' => 'username',
-                    'rules' => 'max_length[12]|is_unique[' . config_item('user_table') . '.username]',
-                    'errors' => [
-                        'is_unique' => 'Username already in use.'
-                    ]
-                ],
-                [
-                    'field' => 'passwd',
-                    'label' => 'passwd',
-                    'rules' => [
-                        'trim',
-                        'required',
-                        [
-                            '_check_password_strength',
-                            [$this->validation_callables, '_check_password_strength']
+                $this->form_validation->set_data($user_data);
+
+                $validation_rules = [
+                    [
+                        'field' => 'username',
+                        'label' => 'username',
+                        'rules' => 'max_length[12]|is_unique[' . config_item('user_table') . '.username]',
+                        'errors' => [
+                            'is_unique' => 'Username already in use.'
                         ]
                     ],
-                    'errors' => [
-                        'required' => 'The password field is required.'
+                    [
+                        'field' => 'passwd',
+                        'label' => 'passwd',
+                        'rules' => [
+                            'trim',
+                            'required',
+                            [
+                                '_check_password_strength',
+                                [$this->validation_callables, '_check_password_strength']
+                            ]
+                        ],
+                        'errors' => [
+                            'required' => 'The password field is required.'
+                        ]
+                    ],
+                    [
+                        'field' => 'email',
+                        'label' => 'email',
+                        'rules' => 'trim|required|valid_email|is_unique[' . config_item('user_table') . '.email]',
+                        'errors' => [
+                            'is_unique' => 'Email address already in use.'
+                        ]
+                    ],
+                    [
+                        'field' => 'auth_level',
+                        'label' => 'auth_level',
+                        'rules' => 'required|integer|in_list[1,6,9]'
                     ]
-                ],
-                [
-                    'field' => 'email',
-                    'label' => 'email',
-                    'rules' => 'trim|required|valid_email|is_unique[' . config_item('user_table') . '.email]',
-                    'errors' => [
-                        'is_unique' => 'Email address already in use.'
-                    ]
-                ],
-                [
-                    'field' => 'auth_level',
-                    'label' => 'auth_level',
-                    'rules' => 'required|integer|in_list[1,6,9]'
-                ]
-            ];
+                ];
 
-            $this->form_validation->set_rules($validation_rules);
+                $this->form_validation->set_rules($validation_rules);
 
 
-            if ($this->form_validation->run()) {
-                $user_data['passwd'] = $this->authentication->hash_passwd($user_data['passwd']);
-                $user_data['user_id'] = $this->user_model->get_unused_id();
-                $user_data['created_at'] = date('Y-m-d H:i:s');
+                if ($this->form_validation->run()) {
+                    $user_data['passwd'] = $this->authentication->hash_passwd($user_data['passwd']);
+                    $user_data['user_id'] = $this->user_model->get_unused_id();
+                    $user_data['created_at'] = date('Y-m-d H:i:s');
 
-                // If username is not used, it must be entered into the record as NULL
-                if (empty($user_data['username'])) {
-                    $user_data['username'] = NULL;
-                }
+                    // If username is not used, it must be entered into the record as NULL
+                    if (empty($user_data['username'])) {
+                        $user_data['username'] = NULL;
+                    }
 
-                $this->db->set($user_data)->insert(config_item('user_table'));
+                    $this->db->set($user_data)->insert(config_item('user_table'));
 
-                if ($this->db->affected_rows() == 1)
-                    $data['success'] = 'Congratulations User ' . $user_data['username'] . ' was created.';
+                    if ($this->db->affected_rows() == 1)
+                        $data['success'] = 'Congratulations User ' . $user_data['username'] . ' was created.';
 
-                $subject = 'User successfully Created';
-                $from_email = 'homestead@bilinedev.com';
-                $from_name = 'Homestead Bilinedev';
+                    $subject = 'User successfully Created';
+                    $from_email = 'homestead@bilinedev.com';
+                    $from_name = 'Homestead Bilinedev';
 
-                $this->send_email($subject, $data['success'], $from_email, $from_name, $user_data['email']);
+                    $this->send_email($subject, $data['success'], $from_email, $from_name, $user_data['email']);
 
 //                $this->send_email($subject,'A user just registered, username :'.$user_data['username'],$from_email,$from_name,'ali.fahmi@bilinedev.com');
 
-                $this->render_view('register', $data);
+                    $this->render_view('register', $data);
+                } else {
+                    $data['errors'] = validation_errors();
+                    $this->render_view('register', $data);
+                }
             } else {
-                $data['errors'] = validation_errors();
                 $this->render_view('register', $data);
             }
+
         } else {
-            $this->render_view('register', $data);
+            redirect('/');
         }
 
     }
 
     public function login()
     {
-        if ($this->uri->uri_string() == 'example/login')
-            show_404();
 
-        if (strtolower($_SERVER['REQUEST_METHOD']) == 'post')
-            $this->require_min_level(1);
+        if (!$this->verify_min_level(1)) {
+            if ($this->uri->uri_string() == 'auth/login')
+                show_404();
 
-        $this->setup_login_form();
+            if (strtolower($_SERVER['REQUEST_METHOD']) == 'post')
+                $this->require_min_level(1);
 
-        $data['title'] = 'Login Page';
+            $this->setup_login_form();
 
-        $this->render_view('login', $data);
+            $data['title'] = 'Login Page';
+
+            $this->render_view('login', $data);
+        } else {
+            redirect('/');
+        }
 
     }
 
@@ -376,7 +283,6 @@ class Auth extends MY_Controller
         $this->render_view('recover', (isset($view_data)) ? $view_data : '', TRUE);
     }
 
-
     public function recovery_verification($user_id = '', $recovery_code = '')
     {
         /// If IP is on hold, display message
@@ -438,141 +344,6 @@ class Auth extends MY_Controller
         $this->render_view('change_password', $view_data);
     }
 
-    public function ajax_login()
-    {
-        $this->is_logged_in();
-
-        $this->tokens->name = 'login_token';
-
-        $data['javascripts'] = [
-            'https://code.jquery.com/jquery-1.12.0.min.js'
-        ];
-
-        if ($this->authentication->on_hold === TRUE) {
-            $data['on_hold_message'] = 1;
-        } // This check for on hold is for normal login attempts
-        else if ($on_hold = $this->authentication->current_hold_status()) {
-            $data['on_hold_message'] = 1;
-        }
-
-        $data['final_head'] = "<script>
-            $(document).ready(function(){
-                $(document).on( 'submit', 'form', function(e){
-                    $.ajax({
-                        type: 'post',
-                        cache: false,
-                        url: '/examples/ajax_attempt_login',
-                        data: {
-                            'login_string': $('#login_string').val(),
-                            'login_pass': $('#login_pass').val(),
-                            'login_token': $('[name=\"login_token\"]').val()
-                        },
-                        dataType: 'json',
-                        success: function(response){
-                            $('[name=\"login_token\"]').val( response.token );
-                            console.log(response);
-                            if(response.status == 1){
-                                $('form').replaceWith('<p>You are now logged in.</p>');
-                                $('#login-link').attr('href','/examples/logout').text('Logout');
-                                $('#ajax-login-link').parent().hide();
-                            }else if(response.status == 0 && response.on_hold){
-                                $('form').hide();
-                                $('#on-hold-message').show();
-                                alert('You have exceeded the maximum number of login attempts.');
-                            }else if(response.status == 0 && response.count){
-                                alert('Failed login attempt ' + response.count + ' of ' + $('#max_allowed_attempts').val());
-                            }
-                        }
-                    });
-                    return false;
-                });
-            });
-        </script>";
-
-        $html = $this->load->view('examples/page_header', $data, TRUE);
-        $html .= $this->load->view('examples/ajax_login_form', $data, TRUE);
-        $html .= $this->load->view('examples/page_footer', '', TRUE);
-
-        echo $html;
-    }
-
-    public function ajax_attempt_login()
-    {
-        if ($this->input->is_ajax_request()) {
-            // Allow this page to be an accepted login page
-            $this->config->set_item('allowed_pages_for_login', ['examples/ajax_attempt_login']);
-
-            // Make sure we aren't redirecting after a successful login
-            $this->authentication->redirect_after_login = FALSE;
-
-            // Do the login attempt
-            $this->auth_data = $this->authentication->user_status(0);
-
-            // Set user variables if successful login
-            if ($this->auth_data)
-                $this->_set_user_variables();
-
-            // Call the post auth hook
-            $this->post_auth_hook();
-
-            // Login attempt was successful
-            if ($this->auth_data) {
-                echo json_encode([
-                    'status' => 1,
-                    'user_id' => $this->auth_user_id,
-                    'username' => $this->auth_username,
-                    'level' => $this->auth_level,
-                    'role' => $this->auth_role,
-                    'email' => $this->auth_email
-                ]);
-            } // Login attempt not successful
-            else {
-                $this->tokens->name = 'login_token';
-
-                $on_hold = (
-                    $this->authentication->on_hold === TRUE OR
-                    $this->authentication->current_hold_status()
-                )
-                    ? 1 : 0;
-
-                echo json_encode([
-                    'status' => 0,
-                    'count' => $this->authentication->login_errors_count,
-                    'on_hold' => $on_hold,
-                    'token' => $this->tokens->token()
-                ]);
-            }
-        } // Show 404 if not AJAX
-        else {
-            show_404();
-        }
-    }
-
-    public function social_login()
-    {
-        // Add the username or email address of the user you want logged in:
-        $username_or_email_address = '';
-
-        if (!empty($username_or_email_address)) {
-            $auth_model = $this->authentication->auth_model;
-
-            // Get normal authentication data using username or email address
-            if ($auth_data = $this->{$auth_model}->get_auth_data($username_or_email_address)) {
-                /**
-                 * If redirect param exists, user redirected there.
-                 * This is entirely optional, and can be removed if
-                 * no redirect is desired.
-                 */
-                $this->authentication->redirect_after_login();
-
-                // Set auth related session / cookies
-                $this->authentication->maintain_state($auth_data);
-            }
-        } else {
-            echo 'Example requires that you set a username or email address.';
-        }
-    }
-
     private function render_view($page, $data = NULL)
     {
         $this->load->view('templates/header');
@@ -588,4 +359,5 @@ class Auth extends MY_Controller
         $this->email->message($message);
         $this->email->send();
     }
+
 }
